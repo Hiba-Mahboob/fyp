@@ -91,7 +91,6 @@ def handleLogin(request):
             return redirect('Home')
 
         else:
-            login(request, user)
             messages.error(request, 'Invalid credentials')
             return redirect('Login')     
 
