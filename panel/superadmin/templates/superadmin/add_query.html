@@ -3,7 +3,7 @@
 {% block title %}Staff | Add Query{% endblock %}
 
 {% block body %}
-<form action="/superadmin/chatbot/" method="POST">{% csrf_token %}
+<form action="/superadmin/addquery" method="POST">{% csrf_token %}
     <div class="form-group">
       <label for="tag">Tag</label>
       <input
@@ -19,39 +19,11 @@
         type="text"
         class="form-control"
         id="pattern"
-        name="pattern"
-      />
-      <label for="pattern">Patterns</label>
-      <input
-        type="text"
-        class="form-control"
-        id="pattern"
-        name="pattern"
-      />
-      <label for="pattern">Patterns</label>
-      <input
-        type="text"
-        class="form-control"
-        id="pattern"
-        name="pattern"
+        name="pattern"      
       />
     </div>
     <div class="form-group">
       <label for="response">Reponse 1</label>
-      <input
-        type="text"
-        class="form-control"
-        id="response"
-        name="response"
-      />
-      <label for="response">Reponse 2</label>
-      <input
-        type="text"
-        class="form-control"
-        id="response"
-        name="response"
-      />
-      <label for="response">Reponse 3</label>
       <input
         type="text"
         class="form-control"

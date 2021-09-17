@@ -30,6 +30,10 @@
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               <a class="dropdown-item" href="/superadmin/signupstudent">Create Student Account</a>
               <a class="dropdown-item" href="/superadmin/signupmember">Create Staff Account</a>
+              <a class="dropdown-item" href="/superadmin/signupuniversity">Create University Account</a>
+          </li>
+          <li class="form-inline my-2 my-lg-0">
+            <a class="nav-link" href="/superadmin/logout">Logout</a>
           </li>
         </ul>
         {% endif %}
@@ -44,9 +48,9 @@
         </ul>
         {% endif %}
       </div>
-    </nav>
-
+    </nav>  
     {% block body %}{% endblock %}
+
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

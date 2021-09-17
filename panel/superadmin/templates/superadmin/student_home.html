@@ -5,7 +5,7 @@
 {% block body %}
 <form action="/superadmin/studenthome" method="POST">
     {% csrf_token %}
-    <div class="form-group">
+    <!-- <div class="form-group">
       <label for="response">Response</label>
       <input
         type="text"
@@ -14,7 +14,14 @@
         name="response"
         value={{response}}
       />
-    </div>
+    </div> -->
+    {% for o in queries %}
+      <div class="container">
+        <p><b>You:</b> {{ o.query }}</p>
+        <p><b>chatbot:</b>{{ o.response }}</p>
+      </div>
+    {% endfor %}
+
     <div class="form-group">
       <label for="exampleInputPassword1">Query</label>
       <input

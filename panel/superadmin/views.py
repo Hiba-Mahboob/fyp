@@ -1,3 +1,4 @@
+from superadmin.models import QueryHistory
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib import messages
@@ -27,17 +28,29 @@ def home(request):
 @login_required
 @member_required
 def addQuery(request):
+    if request.method=='POST':
+        data={
+            "tag":request.POST['tag'],
+            "pattern":request.POST['pattern'],
+            "response":request.POST['response'],
+        }
+
+
+        requests.post("http://127.0.0.1:5000/addquery",json=data)
+    
     return render(request, 'superadmin/add_query.html')
 
 @login_required
 @student_required
 def studentHome(request):
-    context={'response':''}
+    queryHistory=QueryHistory.objects.filter(queried_by=request.user)
+    context={'response':'','queries':queryHistory}
     if request.method == 'POST':
         query=request.POST.get('query','')
         response = requests.get('https://chatbotuitbackend.herokuapp.com/chatbotquery/'+query)
         responseJSON = response.json()
         context={'response':responseJSON['res'],'query':query}
+        QueryHistory.objects.create(query=query, response=responseJSON['res'], queried_by=request.user)
 
         # if responseJSON['status']==True:
         #     queryHistory=QueryHistory(query=responseJSON['res'], status=responseJSON['status'])
@@ -59,6 +72,11 @@ def studentSignupPage(request):
 @superadmin_required
 def memberSignupPage(request):
     return render(request, 'superadmin/signup_member.html')
+
+@login_required
+@superadmin_required
+def universitySignupPage(request):
+    return render(request, 'superadmin/signup_university.html')
 
 def handleLogin(request):
     if request.method=='POST':
@@ -111,6 +129,24 @@ def handleMemberSignup(request):
 
         messages.success(request, "Faculty account has been created successfully")
         return redirect('MemberSignup')
+
+    else:
+        return HttpResponse("404 - Not found")
+
+@login_required
+@superadmin_required
+def handleUniversitySignup(request):
+    if request.method=="POST":
+        username=request.POST['username']
+        pass1=request.POST['pass1']
+        pass2=request.POST['pass2']
+
+        user = User.objects.create_user(username=username, password=pass1)
+        user.is_university= True
+        user.save()
+
+        messages.success(request, "University account has been created successfully")
+        return redirect('UniversitySignup')
 
     else:
         return HttpResponse("404 - Not found")
