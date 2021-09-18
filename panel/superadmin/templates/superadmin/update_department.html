@@ -1,0 +1,19 @@
+{% extends 'superadmin/basic.html' %}
+
+{% block title %}Super Admin | Create user account{% endblock %}
+
+{% block body %}
+<form action="handleupdatedept" method="post"> 
+  {% csrf_token %}
+    <h2>Update Department Account</h2>
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input type="text" class="form-control" id="username" name='username' value={{deptuni.username}} aria-describedby="username" placeholder="Enter username">
+    </div>
+    <div class="form-group">
+      <label for="name">Department Name</label>
+      <input type="text" class="form-control" id="name" name='name' value={{deptuni.name}} aria-describedby="update-name" placeholder="Enter username">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+{% endblock %}

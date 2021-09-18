@@ -18,22 +18,31 @@
       </button>
     
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        {% if user.is_authenticated and user.is_super_admin %}
+        {% if user.is_authenticated %}
         <ul class="navbar-nav mr-auto">
           <li class="nav-item active">
             <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item dropdown">
+            {% if user.is_authenticated and not user.is_student %}
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Accounts
             </a>
+            {% endif %}
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              {% if user.is_authenticated and user.is_university %}
               <a class="dropdown-item" href="/superadmin/signupstudent">Create Student Account</a>
-              <a class="dropdown-item" href="/superadmin/signupmember">Create Staff Account</a>
+              <a class="dropdown-item" href="/superadmin/signupdepartment">Create Department Account</a>
+              {% endif %}
+              {% if user.is_authenticated and user.is_super_admin %}
               <a class="dropdown-item" href="/superadmin/signupuniversity">Create University Account</a>
+              {% endif %}
+              {% if user.is_authenticated and user.is_department %}
+              <a class="dropdown-item" href="/superadmin/signupmember">Create Staff Account</a>
+              {% endif %}
           </li>
           <li class="form-inline my-2 my-lg-0">
-            <a class="nav-link" href="/superadmin/logout">Logout</a>
+            <a class="nav-link" href='{% if user.is_super_admin %}{{"/superadmin/logout"}}{% elif user.is_university %}{{"/superadmin/universityhome/logout"}}{% elif user.is_department %}{{"/superadmin/departmenthome/logout"}}{% else %}{{"/superadmin/studenthome/logout"}}{% endif %}'>Logout</a>
           </li>
         </ul>
         {% endif %}
