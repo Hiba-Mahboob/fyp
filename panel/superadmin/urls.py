@@ -34,6 +34,12 @@ urlpatterns = [
     path('addquery', views.addQuery, name="AddQuery"),
     path('handledeletedept', views.handleDeleteDept, name="HandleDeleteDept"),
     path('handleupdatedept', views.handleUpdateDept, name="HandleUpdateDept"),
+    path('handledeleteuni', views.handleDeleteUni, name="HandleDeleteUni"),
+    path('handleupdateuni', views.handleUpdateUni, name="handleUpdateUni"),
     path('updatedept', views.UpdateDept, name="UpdateDept"),
+    path('queryhistory', views.queryHistory, name="queryHistory"),
+    path('invalidquery', views.invalidQuery, name="InvalidQuery"),
+    path('sendmessage', views.sendMessage, name="SendMessage"),
+    path('handlesendmessage', views.handleSendMessage, name="HandleSendMessage"),
     
 ]

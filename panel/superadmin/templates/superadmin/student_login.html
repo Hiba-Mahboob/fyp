@@ -1,19 +1,24 @@
 {% extends 'superadmin/basic.html' %}
 
-{% block title %}Super Admin Login{% endblock %}
+{% block title %}Student Login{% endblock %}
 
 {% block body %}
-<form action="handlestudentlogin" method="post"> 
-    {% csrf_token %}
-    <h2>Student Login</h2>
-    <div class="form-group">
-      <label for="loginusername">Username</label>
-      <input type="text" class="form-control" id="loginusername" name="loginusername" aria-describedby="username" placeholder="Enter username">
-    </div>
-    <div class="form-group">
-      <label for="loginpass">Password</label>
-      <input type="password" class="form-control" id="loginpass" name="loginpass" placeholder="Password">
-    </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-  </form>
+<div class="card">
+  <h5 class="card-header">Student Login</h5>
+  <div class="card-body">
+    <form action="handlestudentlogin" method="post"> 
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="loginusername">Username</label>
+        <input type="text" class="form-control" id="loginusername" name="loginusername" aria-describedby="username" placeholder="Enter username">
+      </div>
+      <div class="form-group">
+        <label for="loginpass">Password</label>
+        <input type="password" class="form-control" id="loginpass" name="loginpass" placeholder="Password">
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+</div>
+
 {% endblock %}

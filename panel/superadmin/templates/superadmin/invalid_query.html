@@ -1,0 +1,25 @@
+{% extends 'superadmin/basic.html' %}
+
+{% block title %}Department Dashboard{% endblock %}
+
+{% block body %}
+<div class="card">
+    <h5 class="card-header">Invalid Queries</h5>
+    <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Query</th>
+            <th>Response</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for o in queryhistory %}
+          <tr>
+            <td>{{ o.query }}</td>      
+            <td>{{ o.response }}</td>
+          </tr>
+        {% endfor %}  
+        </tbody>
+      </table>
+  </div>
+{% endblock %}

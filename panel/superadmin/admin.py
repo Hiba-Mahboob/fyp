@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import DeptUni, User, QueryHistory
+from .models import DeptUni, User, QueryHistory, MemberDept, StudentUni, ScheduleMsg
 from .forms import UserCreationForm
 from django.contrib.auth.admin import UserAdmin
 
@@ -27,3 +27,6 @@ class CustomUserAdmin(UserAdmin):
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(QueryHistory)
 admin.site.register(DeptUni)
+admin.site.register(MemberDept)
+admin.site.register(StudentUni)
+admin.site.register(ScheduleMsg)

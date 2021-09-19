@@ -1,0 +1,27 @@
+{% extends 'superadmin/basic.html' %}
+
+{% block title %}Department Dashboard{% endblock %}
+
+{% block body %}
+<div class="card">
+    <h5 class="card-header">Query History</h5>
+    <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Query</th>
+            <th>Response</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for o in queryhistory %}
+          <tr>
+            <td>{{ o.query }}</td>      
+            <td>{{ o.response }}</td>
+            <td>{{ o.status }}</td>
+          </tr>
+        {% endfor %}  
+        </tbody>
+      </table>
+  </div>
+{% endblock %}

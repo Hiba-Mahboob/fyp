@@ -34,4 +34,23 @@
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
+  <div>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th scope="col">Message from Admin</th>
+            <th scope="col">Event</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for s in schedule %}
+            <tr>
+                                         
+                <td>{{ s.msg }}</td>
+                <td>{{ s.criteria }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>  
+</div>
 {% endblock %}

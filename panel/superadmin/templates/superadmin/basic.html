@@ -23,6 +23,26 @@
           <li class="nav-item active">
             <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
           </li>
+          {% if user.is_authenticated and user.is_member %}
+          <li class="nav-item active">
+            <a class="nav-link" href="/superadmin/addquery">Add Query <span class="sr-only">(current)</span></a>
+          </li>
+          {% endif %}
+          {% if user.is_authenticated and user.is_department or user.is_member %}
+          <li class="nav-item">
+            <a class="nav-link" href="/superadmin/queryhistory">Query History</a>
+          </li>
+          {% endif %}
+          {% if user.is_authenticated and user.is_member %}
+          <li class="nav-item">
+            <a class="nav-link" href="/superadmin/sendmessage">Send message</a>
+          </li>
+          {% endif %}
+          {% if user.is_authenticated and user.is_department or user.is_member %}
+          <li class="nav-item">
+            <a class="nav-link" href="/superadmin/invalidquery">Invalid Query</a>
+          </li>
+          {% endif %}
           <li class="nav-item dropdown">
             {% if user.is_authenticated and not user.is_student %}
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -45,20 +65,20 @@
             <a class="nav-link" href='{% if user.is_super_admin %}{{"/superadmin/logout"}}{% elif user.is_university %}{{"/superadmin/universityhome/logout"}}{% elif user.is_department %}{{"/superadmin/departmenthome/logout"}}{% else %}{{"/superadmin/studenthome/logout"}}{% endif %}'>Logout</a>
           </li>
         </ul>
-        {% endif %}
-        {% if user.is_authenticated and user.is_member %}
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-          </li>
-          <li class="nav-item active">
-            <a class="nav-link" href="/superadmin/addquery">Add Query <span class="sr-only">(current)</span></a>
-          </li>
-        </ul>
-        {% endif %}
+        {% endif %}        
       </div>
     </nav>  
-    {% block body %}{% endblock %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}" role="alert">
+      {{ message }}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  {% endfor %}
+    {% block body %}
+
+    {% endblock %}
 
 
     <!-- Optional JavaScript -->

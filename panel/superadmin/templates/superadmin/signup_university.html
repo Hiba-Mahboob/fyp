@@ -3,9 +3,11 @@
 {% block title %}Super Admin | Create user account{% endblock %}
 
 {% block body %}
+<div class="card">
+  <h5 class="card-header">Register University</h5>
+  <div class="card-body">
 <form action="handleuniversitysignup" method="post"> 
   {% csrf_token %}
-    <h2>Create University Account</h2>
     <div class="form-group">
       <label for="username">Username</label>
       <input type="text" class="form-control" id="username" name='username' aria-describedby="username" placeholder="Enter username">
@@ -20,4 +22,6 @@
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
+</div>
+</div>
 {% endblock %}

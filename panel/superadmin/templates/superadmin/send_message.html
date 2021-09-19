@@ -1,0 +1,59 @@
+{% extends 'superadmin/basic.html' %}
+
+{% block title %}Staff | Send message{% endblock %}
+
+{% block body %}
+<div>
+    <!-- <form action="/speradmin/handlesendmessage" method="post" autocomplete="off">
+        <input type="text" placeholder="Search" name="tag" id="tag">
+        <input type="submit" value="Search" name="">
+    </form> -->
+    <form action="/superadmin/handlesendmessage" method="POST">
+        {% csrf_token %}
+        <fieldset>
+            <legend>Message</legend>
+            <div class="form-group">
+                <label for="message">Message</label>
+                <input type="text" class="form-control" id="message" name='message' aria-describedby="message" placeholder="Enter username">
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Criteria</legend>
+            <div class="form-group">
+                <label for="state">State</label>
+                <input type="text" class="form-control" id="state" name='state' aria-describedby="state" placeholder="Enter username">
+            </div>
+            <div class="form-group">
+                <label for="criteria">Criteria</label>
+                <input type="text" class="form-control" id="criteria" name='criteria' aria-describedby="criteria" placeholder="Enter username">
+            </div>
+        </fieldset>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th scope="col">Mark</th>
+                <th scope="col">Username</th>
+                <th scope="col">Batch</th>
+                <th scope="col">Mobile</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for std in studentuni %}
+                <tr name="mycheckbox">
+                    <td><input type="checkbox" name="mycheckbox" value="{{ std.username }}"/></td>
+                    
+                    <td>{{ std.username }}</td>
+                    <td>{{ std.batch }}</td>
+                    <td>{{ std.number }}</td>
+                    <td><input type="hidden" name="number" value="{{ std.number }}"/></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            
+        </table>            
+        <div>
+            <button type="submit" class="btn btn-primary">Send Message</button>
+        </div>
+    </form>
+ </div>
+{% endblock %}

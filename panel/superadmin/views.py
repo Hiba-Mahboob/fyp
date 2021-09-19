@@ -1,4 +1,4 @@
-from superadmin.models import DeptUni, QueryHistory
+from superadmin.models import DeptUni, QueryHistory, MemberDept, StudentUni, ScheduleMsg
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib import messages
@@ -8,6 +8,7 @@ from .decorators import student_required, superadmin_required, member_required, 
 from django.contrib.auth.decorators import login_required
 import requests
 from django.contrib.auth import get_user_model
+from twilio.rest import Client
 User = get_user_model()
 
 
@@ -29,7 +30,10 @@ def departmentLoginPage(request):
 @login_required
 @superadmin_required
 def home(request):
-    return render(request, 'superadmin/home.html')
+    universities=User.objects.filter(is_university=True)
+    uni_count=User.objects.filter(is_university=True).count()
+    context={'universities':universities, 'uni_count': uni_count}
+    return render(request, 'superadmin/home.html',context)
 
 @login_required
 @member_required
@@ -45,6 +49,29 @@ def addQuery(request):
         requests.post("http://127.0.0.1:5000/addquery",json=data)
     
     return render(request, 'superadmin/add_query.html')
+
+@login_required
+@member_required
+def sendMessage(request):
+    studentuni=StudentUni.objects.all()
+    print(studentuni)  
+    context={'studentuni':studentuni} 
+    return render(request, 'superadmin/send_message.html', context)
+
+@login_required
+@member_required
+def handleSendMessage(request):
+    if request.method=="POST":
+        username=request.POST("mycheckbox")
+        number=request.POST["number"]      
+        ScheduleMsg.objects.create(student=username, msg=request.POST["message"])
+        
+        sendMobileMsg(number, message=request.POST["message"])
+        messages.success(request, 'Message to Student/s successfully sent')
+        return redirect("SendMessage")
+    else:
+        HttpResponse('Something went wrong')
+        
 
 @login_required
 @university_required
@@ -68,6 +95,27 @@ def handleUpdateDept(request):
         HttpResponse("Something went wrong")
 
 @login_required
+@superadmin_required
+def handleDeleteUni(request):
+    if request.method=="POST":
+        print(DeptUni.objects.filter(uni=request.POST['delete-id']).count())
+        # User.objects.get(username=request.POST['delete-id']).delete()
+        return redirect("UniversityHome")
+    else:
+        HttpResponse("Something went wrong")
+
+@login_required
+@superadmin_required
+def handleUpdateUni(request):
+    if request.method=="POST":
+        deptuni=DeptUni.objects.get(username=request.POST['username'])
+        deptuni.name=request.POST['name']
+        deptuni.save()
+        return redirect("UniversityHome")
+    else:
+        HttpResponse("Something went wrong")
+
+@login_required
 @university_required
 def UpdateDept(request):
     if request.method=="POST":
@@ -76,20 +124,48 @@ def UpdateDept(request):
         HttpResponse("Something went wrong")
 
 @login_required
+@department_required
+def queryHistory(request):    
+    queryhistory=QueryHistory.objects.filter()
+    context={'queryhistory':queryhistory}
+    return render(request, 'superadmin/query_history.html', context)
+
+@login_required
+@member_required
+def queryHistory(request):    
+    queryhistory=QueryHistory.objects.filter()
+    context={'queryhistory':queryhistory}
+    return render(request, 'superadmin/query_history.html', context)
+
+@login_required
+@department_required
+def invalidQuery(request):    
+    queryhistory=QueryHistory.objects.filter(status="False")
+    context={'queryhistory':queryhistory}
+    return render(request, 'superadmin/invalid_query.html', context)
+
+@login_required
+@member_required
+def invalidQuery(request):    
+    queryhistory=QueryHistory.objects.filter(status="False")
+    context={'queryhistory':queryhistory}
+    return render(request, 'superadmin/invalid_query.html', context)
+
+
+@login_required
 @student_required
 def studentHome(request):
     queryHistory=QueryHistory.objects.filter(queried_by=request.user)
-    context={'response':'','queries':queryHistory}
+    shedulemsg=ScheduleMsg.objects.filter(student=request.user.username)
+    context={'response':'','queries':queryHistory, 'schedule': shedulemsg}
     if request.method == 'POST':
         query=request.POST.get('query','')
         response = requests.get('https://chatbotuitbackend.herokuapp.com/chatbotquery/'+query)
         responseJSON = response.json()
         context={'response':responseJSON['res'],'query':query}
-        QueryHistory.objects.create(query=query, response=responseJSON['res'], queried_by=request.user)
+        QueryHistory.objects.create(query=query, response=responseJSON['res'], status=responseJSON['status'], queried_by=request.user)
         return render(request, 'superadmin/student_home.html', context)
-        # if responseJSON['status']==True:
-        #     queryHistory=QueryHistory(query=responseJSON['res'], status=responseJSON['status'])
-        #     queryHistory.save()
+
     return render(request, 'superadmin/student_home.html', context)
 
 @login_required
@@ -102,13 +178,19 @@ def memberHome(request):
 def universityHome(request):
     deptuni=DeptUni.objects.filter(uni=request.user)
     dept_count=DeptUni.objects.filter(uni=request.user).count()
-    context={'dept':deptuni,'dept_count':dept_count}
+
+    studentuni=StudentUni.objects.filter(uni=request.user)
+    students_count=StudentUni.objects.filter(uni=request.user).count()
+    context={'dept':deptuni,'dept_count':dept_count, 'students':studentuni,'students_count':students_count}
     return render(request, 'superadmin/university_home.html', context)
 
 @login_required
 @department_required
 def departmentHome(request):
-    return render(request, 'superadmin/department_home.html')
+    memberdept=MemberDept.objects.filter(dept=request.user)
+    member_count=MemberDept.objects.filter(dept=request.user).count()
+    context={'memberdept':memberdept, 'member_count': member_count}
+    return render(request, 'superadmin/department_home.html', context)
 
 @login_required
 @university_required
@@ -162,10 +244,13 @@ def handleLogin(request):
 def handleStudentSignup(request):
     if request.method=="POST":
         username=request.POST['username']
+        batch=request.POST['batch']
+        number=request.POST['number']
         pass1=request.POST['pass1']
         pass2=request.POST['pass2']
 
         user = User.objects.create_user(username=username, password=pass1)
+        StudentUni.objects.create(uni=request.user, username=username, batch=batch, number=number)
         user.is_student= True
         user.save()
 
@@ -184,6 +269,7 @@ def handleMemberSignup(request):
         pass2=request.POST['pass2']
 
         user = User.objects.create_user(username=username, password=pass1)
+        MemberDept.objects.create(dept=request.user, username=username)
         user.is_member= True
         user.save()
 
@@ -258,11 +344,10 @@ def handleMemberLogin(request):
 
         if user is not None and user.is_member:
             login(request, user)
-            messages.success(request, 'Student successfully logged in')
+            messages.success(request, 'Member successfully logged in')
             return redirect('MemberHome')
 
         else:
-            login(request, user)
             messages.error(request, 'Invalid credentials')
             return redirect('MemberLogin')     
     else:
@@ -281,7 +366,6 @@ def handleDepartmentLogin(request):
             return redirect('DepartmentHome')
 
         else:
-            login(request, user)
             messages.error(request, 'Invalid credentials')
             return redirect('UniversityLogin')     
     else:
@@ -330,4 +414,30 @@ def handleDepartmentLogout(request):
     messages.success(request, "Successfully logged out")
     return redirect('DepartmentLogin')
 
-             
+def sendMobileMsg(number, message):
+    number=number
+    account_sid='ACe5f8845ef4d6288cb53a98e2ad0d767a'
+    auth_token='9227117c4c656871cefbd2277d770a82'
+    client=Client(account_sid,auth_token)
+    body='Your message'+message
+    message=client.messages.create(
+                                from_='+18183056536',
+                                body=body,
+                                to=number
+    )
+
+def getOTPApi(number):
+    account_sid='ACe5f8845ef4d6288cb53a98e2ad0d767a'
+    auth_token='9227117c4c656871cefbd2277d770a82'
+    client=Client(account_sid,auth_token)
+    body='Your message'
+    message=client.messages.create(
+                                from_='+18183056536',
+                                body=body,
+                                to=number
+    )
+
+#     if message.sid:
+#         return True
+#     else:
+#         return False

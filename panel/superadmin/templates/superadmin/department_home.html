@@ -3,5 +3,36 @@
 {% block title %}Department Dashboard{% endblock %}
 
 {% block body %}
-Department Dashboard
+<div class="card">
+    <h5 class="card-header">Staff Members({{ member_count }})</h5>
+    <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Staff</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for o in memberdept %}
+          <tr>
+            <td>{{ o.username }}</td>
+            <td >
+                <form action="/superadmin/handledeletedept" method="post">
+                    {% csrf_token %} 
+                    <input type="hidden" value="{{o.username}}" name="delete-id">
+                    <button type="Submit">Delete</button>
+                </form>
+            </td>
+            <td >
+                <form action="/superadmin/updatedept" method="post">
+                    {% csrf_token %} 
+                    <input type="hidden" value="{{o.username}}" name="username">
+                    <button type="Submit">Update</button>
+                </form>
+            </td>
+          </tr>
+        {% endfor %}  
+        </tbody>
+      </table>
+  </div>
 {% endblock %}

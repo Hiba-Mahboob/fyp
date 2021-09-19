@@ -3,5 +3,36 @@
 {% block title %}Super Admin Login{% endblock %}
 
 {% block body %}
-Super Admin Home
+<div class="card">
+    <h5 class="card-header">Universities({{ uni_count }})</h5>
+    <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Names</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for o in universities %}
+          <tr>
+            <td>{{ o.username }}</td>
+            <td >
+                <form action="/superadmin/handledeleteuni" method="post">
+                    {% csrf_token %} 
+                    <input type="hidden" value="{{o.username}}" name="delete-id">
+                    <button type="Submit">Delete</button>
+                </form>
+            </td>
+            <td >
+                <form action="/superadmin/updateuni" method="post">
+                    {% csrf_token %} 
+                    <input type="hidden" value="{{o.username}}" name="username">
+                    <button type="Submit">Update</button>
+                </form>
+            </td>
+          </tr>
+        {% endfor %}  
+        </tbody>
+      </table>
+  </div>
 {% endblock %}
