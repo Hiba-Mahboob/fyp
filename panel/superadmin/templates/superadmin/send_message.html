@@ -39,8 +39,8 @@
             </thead>
             <tbody>
                 {% for std in studentuni %}
-                <tr name="mycheckbox">
-                    <td><input type="checkbox" name="mycheckbox" value="{{ std.username }}"/></td>
+                <tr>
+                    <td name="mycheckbox"><input type="checkbox" name="mycheckbox" value="{{ std.username }}"/></td>
                     
                     <td>{{ std.username }}</td>
                     <td>{{ std.batch }}</td>

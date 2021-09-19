@@ -62,11 +62,12 @@ def sendMessage(request):
 @member_required
 def handleSendMessage(request):
     if request.method=="POST":
-        username=request.POST("mycheckbox")
+        username=request.POST["mycheckbox"]
         number=request.POST["number"]      
         ScheduleMsg.objects.create(student=username, msg=request.POST["message"])
+        print(number)
         
-        sendMobileMsg(number, message=request.POST["message"])
+        # sendMobileMsg(number, message=request.POST["message"])
         messages.success(request, 'Message to Student/s successfully sent')
         return redirect("SendMessage")
     else:
