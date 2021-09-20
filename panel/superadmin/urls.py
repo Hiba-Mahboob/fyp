@@ -38,6 +38,7 @@ urlpatterns = [
     path('handleupdateuni', views.handleUpdateUni, name="HandleUpdateUni"),
     path('handledeletemember', views.handledDeleteMember, name="HandledDeleteMember"),
     path('updatedept', views.UpdateDept, name="UpdateDept"),
+    path('updateuni', views.updateUni, name="updateUni"),
     path('queryhistory', views.queryHistory, name="queryHistory"),
     path('querydepthistory', views.quieryDeptHisotry, name="QuieryDeptHisotry"),
     path('invalidquery', views.invalidQuery, name="InvalidQuery"),

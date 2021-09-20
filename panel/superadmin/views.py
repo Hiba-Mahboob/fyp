@@ -32,6 +32,8 @@ def departmentLoginPage(request):
 def home(request):
     universities=User.objects.filter(is_university=True)
     uni_count=User.objects.filter(is_university=True).count()
+    universities=UniUni.objects.all()
+    uni_count=UniUni.objects.all().count()
     context={'universities':universities, 'uni_count': uni_count}
     return render(request, 'superadmin/home.html',context)
 
@@ -111,8 +113,9 @@ def handledDeleteMember(request):
 @superadmin_required
 def handleDeleteUni(request):
     if request.method=="POST":
-        User.objects.filter(username=request.POST['delete-id'])
+        print(request.POST['delete-id'])
         User.objects.filter(username=request.POST['delete-id']).delete()
+        UniUni.objects.filter(username=request.POST['delete-id']).delete()
         # print(DeptUni.objects.filter(uni=request.POST['delete-id']).count())
         # User.objects.get(username=request.POST['delete-id']).delete()
         return redirect("Home")
@@ -123,9 +126,10 @@ def handleDeleteUni(request):
 @superadmin_required
 def handleUpdateUni(request):
     if request.method=="POST":
-        user=UniUni.objects.get(username=request.POST['username'])
-        user.name=request.POST['name']
-        user.save()
+        # uniusername=User.objects.get(username=request.POST['username'])
+        uniuni=UniUni.objects.get(username=request.POST['username'])
+        uniuni.name=request.POST['name']
+        uniuni.save()
         return redirect("Home")
     else:
         HttpResponse("Something went wrong")
@@ -143,7 +147,7 @@ def UpdateDept(request):
 def updateUni(request):
     if request.method=="POST":
         context={'uni':request.POST['username']}
-        return render(request, 'superadmin/update_univeristy.html', context)
+        return render(request, 'superadmin/update_university.html', context)
     else:
         HttpResponse("Something went wrong")
 

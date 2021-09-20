@@ -8,7 +8,8 @@
     <table class="table table-striped">
         <thead>
           <tr>
-            <th>Names</th>
+            <th>User Names</th>
+            <th>Uniersities Names</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -16,6 +17,7 @@
         {% for o in universities %}
           <tr>
             <td>{{ o.username }}</td>
+            <td>{{ o.name }}</td>
             <td >
                 <form action="/superadmin/handledeleteuni" method="post">
                     {% csrf_token %} 
