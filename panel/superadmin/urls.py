@@ -44,6 +44,5 @@ urlpatterns = [
     path('invalidquery', views.invalidQuery, name="InvalidQuery"),
     path('invaliddeptquery', views.invalidDepartmentQuery, name="InvalidDepartmentQuery"),
     path('sendmessage', views.sendMessage, name="SendMessage"),
-    path('handlesendmessage', views.handleSendMessage, name="HandleSendMessage"),
-    
+    path('handlesendmessage', views.handleSendMessage, name="HandleSendMessage"),    
 ]
