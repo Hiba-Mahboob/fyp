@@ -9,6 +9,11 @@ class User(AbstractUser):
     is_university = models.BooleanField(default=False)
     is_department = models.BooleanField(default=False)
 
+class UniUni(models.Model):
+    uni=models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    username=models.CharField(max_length=255,default="-")
+    name=models.CharField(max_length=255,default="-")
+
 class DeptUni(models.Model):
     uni=models.ForeignKey(User, on_delete=models.DO_NOTHING)
     username=models.CharField(max_length=255,default="-")

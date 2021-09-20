@@ -23,7 +23,7 @@
                     <button type="Submit">Delete</button>
                 </form>
             </td>
-            <td >
+            <td>
                 <form action="/superadmin/updateuni" method="post">
                     {% csrf_token %} 
                     <input type="hidden" value="{{o.username}}" name="username">

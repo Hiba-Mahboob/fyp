@@ -28,7 +28,12 @@
             <a class="nav-link" href="/superadmin/addquery">Add Query <span class="sr-only">(current)</span></a>
           </li>
           {% endif %}
-          {% if user.is_authenticated and user.is_department or user.is_member %}
+          {% if user.is_authenticated and user.is_department %}
+          <li class="nav-item">
+            <a class="nav-link" href="/superadmin/querydepthistory">Query History</a>
+          </li>
+          {% endif %}
+          {% if user.is_authenticated and user.is_member %}
           <li class="nav-item">
             <a class="nav-link" href="/superadmin/queryhistory">Query History</a>
           </li>
@@ -38,7 +43,12 @@
             <a class="nav-link" href="/superadmin/sendmessage">Send message</a>
           </li>
           {% endif %}
-          {% if user.is_authenticated and user.is_department or user.is_member %}
+          {% if user.is_authenticated and user.is_department %}
+          <li class="nav-item">
+            <a class="nav-link" href="/superadmin/invaliddeptquery">Invalid Query</a>
+          </li>
+          {% endif %}
+          {% if user.is_authenticated and user.is_member %}
           <li class="nav-item">
             <a class="nav-link" href="/superadmin/invalidquery">Invalid Query</a>
           </li>
@@ -62,7 +72,7 @@
               {% endif %}
           </li>
           <li class="form-inline my-2 my-lg-0">
-            <a class="nav-link" href='{% if user.is_super_admin %}{{"/superadmin/logout"}}{% elif user.is_university %}{{"/superadmin/universityhome/logout"}}{% elif user.is_department %}{{"/superadmin/departmenthome/logout"}}{% else %}{{"/superadmin/studenthome/logout"}}{% endif %}'>Logout</a>
+            <a class="nav-link" href='{% if user.is_super_admin %}{{"/superadmin/logout"}}{% elif user.is_university %}{{"/superadmin/universityhome/logout"}}{% elif user.is_department %}{{"/superadmin/departmenthome/logout"}}{% elif user.is_member %}{{"/superadmin/memberhome/logout"}}{% else %}{{"/superadmin/studenthome/logout"}}{% endif %}'>Logout</a>
           </li>
         </ul>
         {% endif %}        

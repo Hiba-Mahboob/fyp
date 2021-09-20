@@ -41,16 +41,17 @@
                 {% for std in studentuni %}
                 <tr>
                     <td name="mycheckbox"><input type="checkbox" name="mycheckbox" value="{{ std.username }}"/></td>
-                    
+                    <!-- <td name="mynumbercheckbox"><input type="checkbox" name="mynumbercheckbox" value="{{ std.number }}"/></td> -->
+
                     <td>{{ std.username }}</td>
                     <td>{{ std.batch }}</td>
                     <td>{{ std.number }}</td>
-                    <td><input type="hidden" name="number" value="{{ std.number }}"/></td>
+                    <!-- <td><input type="hidden" name="number" value="{{ std.number }}"/></td> -->
                 </tr>
                 {% endfor %}
             </tbody>
-            
-        </table>            
+
+        </table>
         <div>
             <button type="submit" class="btn btn-primary">Send Message</button>
         </div>

@@ -1,4 +1,4 @@
-from superadmin.models import DeptUni, QueryHistory, MemberDept, StudentUni, ScheduleMsg
+from superadmin.models import DeptUni, QueryHistory, MemberDept, StudentUni, ScheduleMsg,UniUni
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib import messages
@@ -46,7 +46,7 @@ def addQuery(request):
         }
 
 
-        requests.post("http://127.0.0.1:5000/addquery",json=data)
+        requests.post("https://chatbotuitbackend.herokuapp.com/addquery",json=data)
     
     return render(request, 'superadmin/add_query.html')
 
@@ -54,7 +54,6 @@ def addQuery(request):
 @member_required
 def sendMessage(request):
     studentuni=StudentUni.objects.all()
-    print(studentuni)  
     context={'studentuni':studentuni} 
     return render(request, 'superadmin/send_message.html', context)
 
@@ -62,12 +61,15 @@ def sendMessage(request):
 @member_required
 def handleSendMessage(request):
     if request.method=="POST":
-        username=request.POST["mycheckbox"]
-        number=request.POST["number"]      
-        ScheduleMsg.objects.create(student=username, msg=request.POST["message"])
-        print(number)
+        username=request.POST.getlist("mycheckbox")
+        # number=request.POST["mynumbercheckbox"]
+        for u in username:
+            ScheduleMsg.objects.create(student=u, msg=request.POST["message"])
+
+        # if number:
+        #     sendMobileMsg(number, message_content=request.POST["message"])          
         
-        # sendMobileMsg(number, message=request.POST["message"])
+        
         messages.success(request, 'Message to Student/s successfully sent')
         return redirect("SendMessage")
     else:
@@ -96,12 +98,24 @@ def handleUpdateDept(request):
         HttpResponse("Something went wrong")
 
 @login_required
+@department_required
+def handledDeleteMember(request):
+    if request.method=="POST":
+        User.objects.get(username=request.POST['delete-id']).delete()
+        MemberDept.objects.get(username=request.POST['delete-id']).delete()
+        return redirect("DepartmentHome")
+    else:
+        HttpResponse("Something went wrong")
+
+@login_required
 @superadmin_required
 def handleDeleteUni(request):
     if request.method=="POST":
-        print(DeptUni.objects.filter(uni=request.POST['delete-id']).count())
+        User.objects.filter(username=request.POST['delete-id'])
+        User.objects.filter(username=request.POST['delete-id']).delete()
+        # print(DeptUni.objects.filter(uni=request.POST['delete-id']).count())
         # User.objects.get(username=request.POST['delete-id']).delete()
-        return redirect("UniversityHome")
+        return redirect("Home")
     else:
         HttpResponse("Something went wrong")
 
@@ -109,10 +123,10 @@ def handleDeleteUni(request):
 @superadmin_required
 def handleUpdateUni(request):
     if request.method=="POST":
-        deptuni=DeptUni.objects.get(username=request.POST['username'])
-        deptuni.name=request.POST['name']
-        deptuni.save()
-        return redirect("UniversityHome")
+        user=UniUni.objects.get(username=request.POST['username'])
+        user.name=request.POST['name']
+        user.save()
+        return redirect("Home")
     else:
         HttpResponse("Something went wrong")
 
@@ -125,8 +139,23 @@ def UpdateDept(request):
         HttpResponse("Something went wrong")
 
 @login_required
+@superadmin_required
+def updateUni(request):
+    if request.method=="POST":
+        context={'uni':request.POST['username']}
+        return render(request, 'superadmin/update_univeristy.html', context)
+    else:
+        HttpResponse("Something went wrong")
+
+@login_required
 @department_required
-def queryHistory(request):    
+def queryDeptHistory(request):    
+    queryhistory=QueryHistory.objects.filter()
+    context={'queryhistory':queryhistory}
+    return render(request, 'superadmin/query_history.html', context)
+@login_required
+@department_required
+def quieryDeptHisotry(request):    
     queryhistory=QueryHistory.objects.filter()
     context={'queryhistory':queryhistory}
     return render(request, 'superadmin/query_history.html', context)
@@ -138,9 +167,13 @@ def queryHistory(request):
     context={'queryhistory':queryhistory}
     return render(request, 'superadmin/query_history.html', context)
 
+
+
+
+
 @login_required
 @department_required
-def invalidQuery(request):    
+def invalidDepartmentQuery(request):    
     queryhistory=QueryHistory.objects.filter(status="False")
     context={'queryhistory':queryhistory}
     return render(request, 'superadmin/invalid_query.html', context)
@@ -151,7 +184,6 @@ def invalidQuery(request):
     queryhistory=QueryHistory.objects.filter(status="False")
     context={'queryhistory':queryhistory}
     return render(request, 'superadmin/invalid_query.html', context)
-
 
 @login_required
 @student_required
@@ -287,10 +319,12 @@ def handleUniversitySignup(request):
         username=request.POST['username']
         pass1=request.POST['pass1']
         pass2=request.POST['pass2']
+        name=request.POST['name']
 
-        user = User.objects.create_user(username=username, password=pass1)
+        user = User.objects.create_user(username=username, password=pass1)        
         user.is_university= True
         user.save()
+        user = UniUni.objects.create(uni=request.user, username=username, name=name)
 
         messages.success(request, "University account has been created successfully")
         return redirect('UniversitySignup')
@@ -415,28 +449,29 @@ def handleDepartmentLogout(request):
     messages.success(request, "Successfully logged out")
     return redirect('DepartmentLogin')
 
-def sendMobileMsg(number, message):
+def sendMobileMsg(number, message_content):
     number=number
     account_sid='ACe5f8845ef4d6288cb53a98e2ad0d767a'
     auth_token='9227117c4c656871cefbd2277d770a82'
     client=Client(account_sid,auth_token)
-    body='Your message'+message
+    body='Your message'+message_content
     message=client.messages.create(
-                                from_='+18183056536',
-                                body=body,
-                                to=number
-    )
+                                    from_='+18183056536',
+                                    body=body,
+                                    to=number
+        )
 
 def getOTPApi(number):
     account_sid='ACe5f8845ef4d6288cb53a98e2ad0d767a'
     auth_token='9227117c4c656871cefbd2277d770a82'
     client=Client(account_sid,auth_token)
     body='Your message'
-    message=client.messages.create(
-                                from_='+18183056536',
-                                body=body,
-                                to=number
-    )
+    for n in number:
+        message=client.messages.create(
+                                    from_='+18183056536',
+                                    body=body,
+                                    to=n
+        )
 
 #     if message.sid:
 #         return True

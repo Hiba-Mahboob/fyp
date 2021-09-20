@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import DeptUni, User, QueryHistory, MemberDept, StudentUni, ScheduleMsg
+from .models import DeptUni, User, QueryHistory, MemberDept, StudentUni, ScheduleMsg, UniUni
 from .forms import UserCreationForm
 from django.contrib.auth.admin import UserAdmin
 
@@ -30,3 +30,4 @@ admin.site.register(DeptUni)
 admin.site.register(MemberDept)
 admin.site.register(StudentUni)
 admin.site.register(ScheduleMsg)
+admin.site.register(UniUni)
